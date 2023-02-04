@@ -1,0 +1,11 @@
+@charset "UTF-8";
+/*!
+ * Application css
+ */
+.no-a-cls{
+   color: #FFFFFF;
+   text-decoration: none;
+}
+.test-cls{
+    color: red;
+}
