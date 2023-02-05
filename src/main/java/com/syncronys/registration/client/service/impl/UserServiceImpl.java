@@ -13,17 +13,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    public static final String MM_DD_YYYY = "MM-dd-yyyy";
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
@@ -43,11 +42,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
-        LocalDate dob = LocalDate.parse(userDto.getDob(), DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+        LocalDate dob = LocalDate.parse(userDto.getDob(), DateTimeFormatter.ofPattern(MM_DD_YYYY));
         BeanUtils.copyProperties(userDto, user);
         user.setDob(dob);
         List<ClientUser> clientUser = clientUserRepository.findByFirstNameAndLastNameAndSsnAndDob(user.getFirstName(), user.getLastName(), user.getSsn(), user.getDob());
-        if(ObjectUtils.isEmpty(clientUser)){
+        if (ObjectUtils.isEmpty(clientUser)) {
             throw new IllegalArgumentException("Client Not Exists in our records.");
         }
         //encrypt the password once we integrate spring security
@@ -62,8 +61,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public UserDto findByUserName(String userName) {
+        User user = userRepository.findByUserName(userName);
+        return convertEntityToDto(user);
     }
 
     @Override
@@ -74,8 +74,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserDto convertEntityToDto(User user) {
+        if (ObjectUtils.isEmpty(user)) {
+            return null;
+        }
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(user, userDto);
+        userDto.setDob(user.getDob().format(DateTimeFormatter.ofPattern(MM_DD_YYYY)));
         return userDto;
     }
 
@@ -85,16 +89,11 @@ public class UserServiceImpl implements UserService {
         return roleRepository.save(role);
     }
 
-    @PostConstruct
-    private void initData() {
-        for (int i = 0; i < 3; i++) {
-            ClientUser e = new ClientUser();
-            e.setId(Long.valueOf(++i));
-            e.setFirstName("SSR" + e.getId());
-            e.setLastName("SSR" + e.getId());
-            e.setSsn("5657" + e.getId());
-            e.setDob(LocalDate.parse("12-12-2022", DateTimeFormatter.ofPattern("MM-dd-yyyy")));
-            clientUserRepository.save(e);
-        }
+    @Override
+    public void updateUser(UserDto userDto) {
+        User user = userRepository.findByUserName(userDto.getUserName());
+        user.setConsentFlag(userDto.getConsentFlag());
+        userRepository.save(user);
     }
+
 }

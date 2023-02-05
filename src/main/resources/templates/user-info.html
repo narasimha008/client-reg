@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Registration and Login System</title>
+    <link href="/css/bootstrap.min.css"
+          rel="stylesheet"
+          crossorigin="anonymous">
+    <link href="/css/app.css"
+          rel="stylesheet"
+          crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Registration and Login System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="col-md-4" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/logout}">Users</a>
+                </li>
+            </ul>
+        </div>
+        <div class="offset-md-3"></div>
+        <div class="col-md-3" id="navbarSupportedContentLogout">
+            <div class="row navbar-brand">
+                <div class="col-md-9">
+                    Welcome, <span th:text="${#authentication.getPrincipal().getFirstName()}"></span> <span
+                        th:text="${#authentication.getPrincipal().getLastName()}"></span>
+                </div>
+                <div class="col-md-3">
+                    <a class="no-a-cls" aria-current="page" th:href="@{/logout}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div th:if="${param.success}">
+        <div class="alert alert-success">You've successfully updated
+            in our app!
+        </div>
+    </div>
+    <div th:if="${param.error}">
+        <div class="alert alert-danger" th:text="${param.error}">
+        </div>
+    </div>
+    <div class="row">
+        <h1> User Information </h1>
+    </div>
+    <div class="row">
+        <div class="col-xl-4">
+            <!-- Profile picture card-->
+            <div class="card mb-4 mb-xl-0">
+                <div class="card-header">Profile Picture</div>
+                <div class="card-body text-center">
+                    <!-- Profile picture image-->
+                    <img class="img-account-profile rounded-circle mb-2"
+                         src="/images/avatar.png" alt="">
+                    <!-- Profile picture help block-->
+                    <!--<div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>-->
+                    <!-- Profile picture upload button-->
+                    <!--<button class="btn btn-primary" type="button">Upload new image</button>-->
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8">
+            <!-- Account details card-->
+            <div class="card mb-4">
+                <div class="card-header">Account Details</div>
+                <div class="card-body">
+                    <form method="post" role="form" th:action="@{/user/update}" th:object="${user}">
+                        <!-- Form Group (username)-->
+                        <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputUsername">Username</label>
+                                <input class="form-control" id="inputUsername" type="text"
+                                       placeholder="Enter your username"
+                                       th:field="*{userName}">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mt-4">
+                                    <input class="form-check-input" type="checkbox"
+                                           id="consentFlag"
+                                           name="consentFlag"
+                                           th:checked="*{consentFlag}"
+                                    />
+                                    <label class="form-label">Consent Flag</label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (first name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputFirstName">First name</label>
+                                <input class="form-control" id="inputFirstName" type="text"
+                                       placeholder="Enter your first name" th:field="*{firstName}">
+                            </div>
+                            <!-- Form Group (last name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputLastName">Last name</label>
+                                <input class="form-control" id="inputLastName" type="text"
+                                       placeholder="Enter your last name" th:field="*{lastName}">
+                            </div>
+                        </div>
+                        <!-- Form Row        -->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (organization name)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputOrgName">State</label>
+                                <input class="form-control" id="inputOrgName" type="text"
+                                       placeholder="Enter your organization name" th:field="*{state}">
+                            </div>
+                            <!-- Form Group (location)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputLocation">City</label>
+                                <input class="form-control" id="inputLocation" type="text"
+                                       placeholder="Enter your location" th:field="*{city}">
+                            </div>
+                        </div>
+                        <!-- Form Group (email address)-->
+                        <div class="mb-3">
+                            <label class="small mb-1" for="address">Email address</label>
+                            <textarea class="form-control"
+                                      id="address"
+                                      name="address"
+                                      placeholder="Enter address"
+                                      th:field="*{address}"
+                                      rows="4"
+                                      cols="50"
+                            ></textarea>
+                        </div>
+                        <!-- Form Row-->
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (phone number)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputPhone">SSN</label>
+                                <input class="form-control" id="inputPhone" type="text"
+                                       placeholder="Enter your phone number" th:field="*{ssn}">
+                            </div>
+                            <!-- Form Group (birthday)-->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputBirthday">Birthday</label>
+                                <input class="form-control" id="inputBirthday" type="text" name="birthday"
+                                       placeholder="Enter your birthday" th:field="*{dob}">
+                            </div>
+                        </div>
+                        <!-- Save changes button-->
+                        <button class="btn btn-primary" type="submit">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

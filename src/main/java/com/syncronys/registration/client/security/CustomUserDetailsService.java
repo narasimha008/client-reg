@@ -33,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         String ssn = request.getParameter("ssn");
         User user = userRepository.findByUserNameAndSsn(userName, ssn);
         if (user != null) {
-            AuthUser authUser =  new AuthUser(user.getUserName(),
+            AuthUser authUser = new AuthUser(user.getUserName(),
                     user.getPassword(),
                     mapRolesToAuthorities(user.getRoles()));
             BeanUtils.copyProperties(user, authUser);
