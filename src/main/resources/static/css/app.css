@@ -9,3 +9,10 @@
 .test-cls{
     color: red;
 }
+.body-th{
+    background-image: url('/images/logo.jpg');
+}
+.app-img-cls{
+    height: 35px;
+    width: 130px;
+}
